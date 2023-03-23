@@ -25,7 +25,7 @@ class UIModel(BaseModel):
 
         self.netG = networks.define_G(netG_input_nc, opt.output_nc, opt.ngf, opt.netG, 
                                       opt.n_downsample_global, opt.n_blocks_global, opt.n_local_enhancers, 
-                                      opt.n_blocks_local, opt.norm, gpu_ids=self.gpu_ids)            
+                                      opt.n_blocks_local, opt.norm, gpu_ids=self.gpu_ids)         
         self.load_network(self.netG, 'G', opt.which_epoch)
 
         print('---------- Networks initialized -------------')
@@ -51,16 +51,18 @@ class UIModel(BaseModel):
         label_map = self.toTensor(label_img)           
         
         # onehot vector input for label map
-        self.label_map = label_map.cuda()
+        #self.label_map = label_map.cuda()
         oneHot_size = (1, opt.label_nc, h, w)
         input_label = self.Tensor(torch.Size(oneHot_size)).zero_()
-        self.input_label = input_label.scatter_(1, label_map.long().cuda(), 1.0)
+        #self.input_label = input_label.scatter_(1, label_map.long().cuda(), 1.0)
+        self.input_label = input_label.scatter_(1, label_map.long(), 1.0)
 
         # read instance map
         if not opt.no_instance:
             inst_img = Image.open(inst_path)        
             inst_img = inst_img.resize((w, h), Image.NEAREST)            
-            self.inst_map = self.toTensor(inst_img).cuda()
+            #self.inst_map = self.toTensor(inst_img).cuda()
+            self.inst_map = self.toTensor(inst_img)
             self.edge_map = self.get_edges(self.inst_map)          
             self.net_input = Variable(torch.cat((self.input_label, self.edge_map), dim=1), volatile=True)
         else:
@@ -158,7 +160,7 @@ class UIModel(BaseModel):
             idx_src[i*bw:(i+1)*bw, 2] = min(h-1, max(0, click_src[0]-bw//2 + i))
             for j in range(bw):
                 idx_src[i*bw+j, 3] = min(w-1, max(0, click_src[1]-bw//2 + j))
-        idx_src = idx_src.cuda()
+        #idx_src = idx_src.cuda()
         
         # again, need to update 3 things
         if idx_src.shape:
@@ -190,7 +192,8 @@ class UIModel(BaseModel):
     def add_objects(self, click_src, label_tgt, mask, style_id=0):
         y, x = click_src[0], click_src[1]
         mask = np.transpose(mask, (2, 0, 1))[np.newaxis,...]        
-        idx_src = torch.from_numpy(mask).cuda().nonzero()        
+        #idx_src = torch.from_numpy(mask).cuda().nonzero()        
+        idx_src = torch.from_numpy(mask).nonzero()
         idx_src[:,2] += y
         idx_src[:,3] += x
 
@@ -312,7 +315,8 @@ class UIModel(BaseModel):
         if mask is not None:
             y, x = click_pt[0], click_pt[1]
             mask = np.transpose(mask, (2,0,1))[np.newaxis,...]        
-            idx = torch.from_numpy(mask).cuda().nonzero()        
+            #idx = torch.from_numpy(mask).cuda().nonzero()        
+            idx = torch.from_numpy(mask).nonzero()        
             idx[:,2] += y
             idx[:,3] += x    
         # changing the label of an existing object 

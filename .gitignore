@@ -140,3 +140,6 @@ checkpoints/
 *.pth
 *.onnx
 wandb/
+.DS_Store
+demo_file/ikue.png
+output/ikue.mp4

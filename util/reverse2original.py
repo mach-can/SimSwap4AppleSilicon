@@ -59,7 +59,7 @@ class SoftErosion(nn.Module):
 def postprocess(swapped_face, target, target_mask,smooth_mask):
     # target_mask = cv2.resize(target_mask, (self.size,  self.size))
 
-    mask_tensor = torch.from_numpy(target_mask.copy().transpose((2, 0, 1))).float().mul_(1/255.0).cuda()
+    mask_tensor = torch.from_numpy(target_mask.copy().transpose((2, 0, 1))).float().mul_(1/255.0)
     face_mask_tensor = mask_tensor[0] + mask_tensor[1]
     
     soft_face_mask_tensor, _ = smooth_mask(face_mask_tensor.unsqueeze_(0).unsqueeze_(0))
@@ -78,7 +78,8 @@ def reverse2wholeimage(b_align_crop_tenor_list,swaped_imgs, mats, crop_size, ori
     target_image_list = []
     img_mask_list = []
     if use_mask:
-        smooth_mask = SoftErosion(kernel_size=17, threshold=0.9, iterations=7).cuda()
+        #smooth_mask = SoftErosion(kernel_size=17, threshold=0.9, iterations=7).cuda()
+        smooth_mask = SoftErosion(kernel_size=17, threshold=0.9, iterations=7)
     else:
         pass
 
@@ -154,9 +155,9 @@ def reverse2wholeimage(b_align_crop_tenor_list,swaped_imgs, mats, crop_size, ori
         # target_image_parsing = postprocess(target_image, source_image, tgt_mask)
 
         if use_mask:
-            target_image = np.array(target_image, dtype=np.float) * 255
+            target_image = np.array(target_image, dtype=float) * 255
         else:
-            target_image = np.array(target_image, dtype=np.float)[..., ::-1] * 255
+            target_image = np.array(target_image, dtype=float)[..., ::-1] * 255
 
 
         img_mask_list.append(img_mask)
@@ -165,7 +166,7 @@ def reverse2wholeimage(b_align_crop_tenor_list,swaped_imgs, mats, crop_size, ori
 
     # target_image /= 255
     # target_image = 0
-    img = np.array(oriimg, dtype=np.float)
+    img = np.array(oriimg, dtype=float)
     for img_mask, target_image in zip(img_mask_list, target_image_list):
         img = img_mask * target_image + (1-img_mask) * img
         

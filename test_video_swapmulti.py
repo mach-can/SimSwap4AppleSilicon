@@ -19,6 +19,7 @@ from options.test_options import TestOptions
 from insightface_func.face_detect_crop_multi import Face_detect_crop
 from util.videoswap import video_swap
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 def lcm(a, b): return abs(a * b) / fractions.gcd(a, b) if a and b else 0
 
@@ -75,7 +76,8 @@ if __name__ == '__main__':
         # img_att = img_b.view(-1, img_b.shape[0], img_b.shape[1], img_b.shape[2])
 
         # convert numpy to tensor
-        img_id = img_id.cuda()
+        #img_id = img_id.cuda()
+        img_id = img_id.to("cpu")
         # img_att = img_att.cuda()
 
         #create latent id
