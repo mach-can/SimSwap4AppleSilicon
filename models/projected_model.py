@@ -45,7 +45,7 @@ class fsModel(BaseModel):
 
         # Id network
         netArc_checkpoint = opt.Arc_path
-        netArc_checkpoint = torch.load(netArc_checkpoint, map_location=torch.device("cpu"))
+        netArc_checkpoint = torch.load(netArc_checkpoint, map_location=torch.device("mps"))
         self.netArc = netArc_checkpoint['model'].module
         self.netArc = self.netArc.cuda()
         self.netArc.eval()

@@ -139,7 +139,7 @@ class Generator_Adain_Upsample(nn.Module):
     def forward(self, input, dlatents):
         x = input  # 3*224*224
 
-        skip1 = self.first_layer(x)
+        skip1 = self.to(torch.device("mps")).first_layer(x)
         skip2 = self.down1(skip1)
         skip3 = self.down2(skip2)
         if self.deep:

@@ -1,0 +1,34 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "Python: 現在のファイル",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_video_swapmulti.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--crop_size",
+                "224",
+                "--use_mask",
+                "--name",
+                "people",
+                "--Arc_path",
+                "${workspaceFolder}/arcface_model/arcface_checkpoint.tar",
+                "--pic_a_path",
+                "${workspaceFolder}/demo_file/ikue.png",
+                "--video_path",
+                "${workspaceFolder}/demo_file/multi_people_1080p.mp4",
+                "--output_path",
+                "${workspaceFolder}/output/ikue.mp4",
+                "--temp_path",
+                "${workspaceFolder}/temp_results "
+            ]
+        }
+    ]
+}

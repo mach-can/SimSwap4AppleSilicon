@@ -1,0 +1,2 @@
+#!/bin/sh
+python test_video_swapmulti.py --crop_size 224 --use_mask --name people --Arc_path arcface_model/arcface_checkpoint.tar --pic_a_path ./demo_file/ikue.png --video_path ./demo_file/multi_people_1080p.mp4 --output_path ./output/ikue.mp4 --temp_path ./temp_results 

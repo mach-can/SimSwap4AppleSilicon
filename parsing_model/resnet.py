@@ -69,7 +69,8 @@ class Resnet18(nn.Module):
         self.init_weight()
 
     def forward(self, x):
-        x = self.conv1(x)
+        x = x.to(torch.device("mps"))
+        x = self.to(torch.device("mps")).conv1(x)
         x = F.relu(self.bn1(x))
         x = self.maxpool(x)
 

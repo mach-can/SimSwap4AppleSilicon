@@ -103,7 +103,7 @@ class ContextPath(nn.Module):
 
     def forward(self, x):
         H0, W0 = x.size()[2:]
-        feat8, feat16, feat32 = self.resnet(x)
+        feat8, feat16, feat32 = self.to(torch.device("mps")).resnet(x)
         H8, W8 = feat8.size()[2:]
         H16, W16 = feat16.size()[2:]
         H32, W32 = feat32.size()[2:]

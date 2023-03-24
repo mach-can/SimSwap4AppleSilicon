@@ -45,11 +45,12 @@ class fsModel(BaseModel):
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
         if opt.resize_or_crop != 'none' or not opt.isTrain:  # when training at full res this causes OOM
-            torch.backends.cudnn.benchmark = True
+            #torch.backends.cudnn.benchmark = True
+            torch.backends.mps.benchmark = True
         self.isTrain = opt.isTrain
 
         #device = torch.device("cuda:0")
-        device = torch.device("cpu")
+        device = torch.device("mps")
 
         if opt.crop_size == 224:
             from .fs_networks import Generator_Adain_Upsample, Discriminator
@@ -58,7 +59,7 @@ class fsModel(BaseModel):
 
         # Generator network
         self.netG = Generator_Adain_Upsample(input_nc=3, output_nc=3, latent_size=512, n_blocks=9, deep=False)
-        #self.netG.to(device)
+        self.netG.to(device)
 
 
 
@@ -67,7 +68,6 @@ class fsModel(BaseModel):
         netArc_checkpoint = opt.Arc_path
         netArc_checkpoint = torch.load(netArc_checkpoint,map_location=torch.device('cpu'))
         self.netArc = netArc_checkpoint['model'].module
-        self.netArc = self.netArc.to(device)
         self.netArc.eval()
 
         if not self.isTrain:
@@ -132,7 +132,7 @@ class fsModel(BaseModel):
         # compute gradients
         grad = torch.autograd.grad(outputs=pred_interpolated,
                                    inputs=interpolated,
-                                   grad_outputs=torch.ones(pred_interpolated.size()).cuda(),
+                                   grad_outputs=torch.ones(pred_interpolated.size(),device="mps"),
                                    retain_graph=True,
                                    create_graph=True,
                                    only_inputs=True)[0]

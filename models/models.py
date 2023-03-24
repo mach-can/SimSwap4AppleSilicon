@@ -89,7 +89,8 @@ class ResNet(nn.Module):
         self.inplanes = 64
         self.use_se = use_se
         super(ResNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, bias=False)
+        device=torch.device("mps")
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, bias=False,device=device)
         self.bn1 = nn.BatchNorm2d(64)
         self.prelu = nn.PReLU()
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
@@ -130,7 +131,7 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        x = self.conv1(x)
+        x = self.to(torch.device("mps")).conv1(x)
         x = self.bn1(x)
         x = self.prelu(x)
         x = self.maxpool(x)
@@ -145,6 +146,7 @@ class ResNet(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.fc(x)
         x = self.bn3(x)
+
 
         return x
 

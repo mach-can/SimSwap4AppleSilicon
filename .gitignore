@@ -141,5 +141,6 @@ checkpoints/
 *.onnx
 wandb/
 .DS_Store
-demo_file/ikue.png
-output/ikue.mp4
+demo_file/
+output/
+temp_results/

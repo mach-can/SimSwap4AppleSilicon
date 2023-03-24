@@ -54,6 +54,7 @@ if __name__ == '__main__':
     else:
         mode = 'None'
     model = create_model(opt)
+    #model.to(torch.device("mps"))
     model.eval()
 
     app = Face_detect_crop(name='antelope', root='./insightface_func/models')
@@ -77,7 +78,7 @@ if __name__ == '__main__':
 
         # convert numpy to tensor
         #img_id = img_id.cuda()
-        img_id = img_id.to("cpu")
+        img_id = img_id.to(torch.device("mps"))
         # img_att = img_att.cuda()
 
         #create latent id
